@@ -7,6 +7,12 @@ from django.contrib.auth.decorators import login_required
 from PIL import Image
 from django.core.files import File
 from io import BytesIO
+# =====================API============================================
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
+from .serializers import ProfileSerializer
+
 
 # Create your views here.
 
@@ -112,3 +118,18 @@ def Myprofile(request):
         form = ProfileImageForm(instance=user_profile)
     return render(request,'users/profile.html',{'form':form})
 
+# =====================API===================================================
+class ProfileAPI(APIView):
+    def get(self, request, format=None):
+        user_profile = request.user.profile
+        serializer = ProfileSerializer(user_profile)
+        return Response(serializer.data)
+
+    def put(self, request, format=None):
+        user_profile = request.user.profile
+        serializer = ProfileSerializer(user_profile, data=request.data)
+
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

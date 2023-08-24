@@ -2,6 +2,7 @@
 from django.urls import path
 from . import views
 from django.contrib.auth import views as auth_views
+from .views import ProfileAPI
 
 urlpatterns = [
     path('login/',views.sign_in,name="login"),
@@ -12,4 +13,7 @@ urlpatterns = [
     path('pw_reset/',auth_views.PasswordResetView.as_view(),name="pw_reset"),
 
     path('profile/',views.Myprofile, name='profile'),
+# =====================API===================================================
+    path('api/profile/', views.ProfileAPI.as_view(), name='profile-api'),
+
 ]

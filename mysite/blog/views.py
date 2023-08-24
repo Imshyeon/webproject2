@@ -147,6 +147,7 @@ def DisLikeView(request,pk):
         disliked=True
     return HttpResponseRedirect(reverse('post-detail',args=[str(pk)]))
 
+# =====================API============================================
 class PostsAPI(APIView):
     def get(self, request):
         posts = Post.objects.all()
