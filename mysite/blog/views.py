@@ -5,7 +5,7 @@ from .models import Post, Comment, ReComment
 from .forms import CommentForm, ReplyForm, PostForm
 from django.utils import timezone
 from django.urls import reverse, reverse_lazy
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect,JsonResponse
 
 
 def about(request):
@@ -24,24 +24,35 @@ class PostListView(ListView):
     template_name = "blog/home.html"   # <app>/<model>_<viewtype>.html
     context_object_name = "posts"
     ordering = ['-published_at']
+    def get_context_data(self, *args, **kwargs):
+        cat_menu=Post.objects.values_list('category', flat=True).distinct()
+        context=super(PostListView,self).get_context_data(*args, **kwargs)
+
+        total_likes = Post.objects.values_list('likes', flat=True).distinct()
+        liked=False
+        if total_likes.filter(id=self.request.user.id).exists():
+            liked=True
+
+        total_dislikes = Post.objects.values_list('dislikes', flat=True).distinct()
+        disliked = False
+        if total_dislikes.filter(id=self.request.user.id).exists():
+            disliked = True
+
+        context['cat_menu']=cat_menu
+        context['total_likes'] = total_likes
+        context['total_dislikes'] = total_dislikes
+        context['liked']=liked
+        context['disliked'] = disliked
+        return context
+
+
+def get_filtered_posts(request, category):
+    filtered_posts = Post.objects.filter(category=category)
+    context = {'filtered_posts': filtered_posts, 'category': category}
+    return render(request, 'blog/filtered_posts.html', context)
 
 class PostDetailView(DetailView):
     model = Post
-
-    # def get_context_data(self, *args, **kwargs):
-    #     # context['total_likes'] = total_likes
-    #     pass
-
-# class PostCreateView(LoginRequiredMixin, CreateView):
-#     model = Post
-#     fields = ['title','category','content']
-#     # form_class = PostForm
-#
-#     def form_valid(self, form): #Post 눌렀을 때 제대로 올라가기 위해서..
-#         form.instance.author = self.request.user    #쓰는사람 현재 유저야!
-#         return super().form_valid(form) #부모 클래스로 전달
-#     # 이것만 하면 define a get_absolute_url method on the Model. 오류 발생 -> Model.py
-
 
 class PostCreateView(LoginRequiredMixin, CreateView):
     model = Post
@@ -111,6 +122,22 @@ def add_reply(request, pk, comment_id):
 
 #=============================================
 def LikeView(request,pk):
-    post=get_object_or_404(Post,id=request.POST.get('post_id')) #likes?
-    post.likes.add(request.user)
+    post=get_object_or_404(Post,id=request.POST.get('post_id'))
+    liked=False
+    if post.likes.filter(id=request.user.id).exists():
+        post.likes.remove(request.user)
+        liked = False
+    else:
+        post.likes.add(request.user)
+        liked=True
+    return HttpResponseRedirect(reverse('post-detail',args=[str(pk)]))
+def DisLikeView(request,pk):
+    post=get_object_or_404(Post,id=request.POST.get('post_id'))
+    disliked=False
+    if post.likes.filter(id=request.user.id).exists():
+        post.likes.remove(request.user)
+        disliked = False
+    else:
+        post.likes.add(request.user)
+        disliked=True
     return HttpResponseRedirect(reverse('post-detail',args=[str(pk)]))

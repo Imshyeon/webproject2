@@ -17,7 +17,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from . import views
-from .views import (PostListView, PostDetailView, PostCreateView, PostUpdateView, PostDeleteView, LikeView)
+from .views import (PostListView, PostDetailView, PostCreateView, PostUpdateView, PostDeleteView, LikeView, DisLikeView)
 
 urlpatterns = [
     path('', PostListView.as_view(), name="home"),
@@ -28,5 +28,7 @@ urlpatterns = [
     path('post/<int:pk>/delete', PostDeleteView.as_view(), name="post-delete"),
     path('post/<int:pk>/add_comment', views.add_comment, name="add-comment"),
     path('post/<int:pk>/add_comment/<int:comment_id>/add_reply', views.add_reply, name="add-reply"),
-    path('like/<int:pk>', LikeView, name='like-post')
+    path('like/<int:pk>', LikeView, name='like-post'),
+    path('dislike/<int:pk>', DisLikeView, name='dislike-post'),
+    path('category/<str:category>/', views.get_filtered_posts, name='get_filtered_posts'),
 ]

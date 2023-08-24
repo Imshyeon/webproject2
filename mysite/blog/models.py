@@ -19,6 +19,7 @@ class Post(models.Model):
     author=models.ForeignKey(User,on_delete=models.CASCADE)
     category = models.CharField(max_length=15, choices=CATEGORY_CHOICES, default='uncategorized')
     likes=models.ManyToManyField(User, related_name="likes")
+    dislikes = models.ManyToManyField(User, related_name="dislikes")
 
     def __str__(self):
         return self.title
@@ -28,7 +29,8 @@ class Post(models.Model):
 
     def total_likes(self):
         return self.likes.count()
-
+    def total_dislikes(self):
+        return self.dislikes.count()
 
 class Comment(models.Model):
     post = models.ForeignKey(Post,related_name="comments",on_delete=models.CASCADE)

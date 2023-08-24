@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<script>
+    function filterItems(category) {
+        var items = document.querySelectorAll('.item');
+        items.forEach(function(item) {
+            if (category === 'all' || item.dataset.category === category) {
+                item.style.display = 'block';
+            } else {
+                item.style.display = 'none';
+            }
+        });
+    }
+
+    var filters = document.querySelectorAll('.filter');
+    filters.forEach(function(filter) {
+        filter.addEventListener('click', function() {
+            var category = this.dataset.filter;
+            filterItems(category);
+        });
+    });
+</script>
+<div class="album py-5 bg-light">
+    <div class="container">
+        <div class="row mb-5 align-items-center">
+            <div class="col-md-12 col-lg-6 mb-4 mb-lg-0" data-aos="fade-up">
+                <h2>Hello! {{ request.user.username }}</h2>
+            </div>
+            <div class="col-md-12 col-lg-6 text-start text-lg-end" data-aos="fade-up" data-aos-delay="100">
+                <div id="filters" class="filters">
+                    <!--  카테고리  -->
+                    <a href="{%url 'home' %}" data-filter="*"><i class="fa-solid fa-house"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            {% for post in filtered_posts %}
+            <div class="col-md-6 mb-4">
+                <div class="card box-shadow">
+                    <img class="card-img-top" src="holder.js/100px225?theme=thumb&bg=55595c&fg=eceeef&text=Thumbnail" alt="Card image cap">
+                    <div class="card-body">
+                        <p class="card-text">{{ post.title }} by {{ post.author }}</p>
+                        <!-- 추가적인 포스트 카드 내용 -->
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock content %}

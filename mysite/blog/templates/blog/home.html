@@ -2,6 +2,27 @@
 {% load static %}
 
 {% block content %}
+<script>
+    function filterItems(category) {
+        var items = document.querySelectorAll('.item');
+        items.forEach(function(item) {
+            if (category === 'all' || item.dataset.category === category) {
+                item.style.display = 'block';
+            } else {
+                item.style.display = 'none';
+            }
+        });
+    }
+
+    var filters = document.querySelectorAll('.filter');
+    filters.forEach(function(filter) {
+        filter.addEventListener('click', function() {
+            var category = this.dataset.filter;
+            filterItems(category);
+        });
+    });
+</script>
+
     <!-- ======= Works Section ======= -->
 <section class="section site-portfolio">
     <div class="container">
@@ -11,11 +32,12 @@
             </div>
             <div class="col-md-12 col-lg-6 text-start text-lg-end" data-aos="fade-up" data-aos-delay="100">
                 <div id="filters" class="filters">
-                    <a href="#" data-filter="*" class="active">All</a>
-                    <a href="#" data-filter=".web">일기</a>
-                    <a href="#" data-filter=".design">영상</a>
-                    <a href="#" data-filter=".branding">사진</a>
-                    <a href="#" data-filter=".photography">기타</a>
+                    <!--  카테고리  -->
+                    <a href="#" data-filter="*">All</a>
+                    {% for item in cat_menu %}
+                    <a href="{% url 'get_filtered_posts' item %}" data-filter="{{item}}">{{item}}</a>
+                    {%endfor%}
+
                 </div>
             </div>
         </div>

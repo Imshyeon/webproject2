@@ -98,12 +98,39 @@
                   <div class="thums_up">
                   <form action="{% url 'like-post' object.pk %}" method="POST">
                     {% csrf_token %}
-                    <button type="submit", name="post_id", value="{{post.id}}", class="btn btn-primary btn-sm">
-                      <i class="fa-solid fa-thumbs-up"></i>
-                    </button>
+                    {% if user.is_authenticated %}
+                    {% if liked %}
+                      <button type="submit", name="post_id", value="{{post.id}}", class="btn btn-danger btn-sm">
+                        <i class="fa-solid fa-thumbs-up"></i>  ({{ object.total_likes }})
+                      </button>
+                    {% else %}
+                      <button type="submit", name="post_id", value="{{post.id}}", class="btn btn-primary btn-sm">
+                        <i class="fa-solid fa-thumbs-up"></i>  ({{ object.total_likes }})
+                      </button>
+                    {% endif %}
+                    {% else %}
+                    <small><a href="{%url 'login' %}">Login to Like</a></small>
+                    {% endif %}
                   </form>
                   </div>
-                  <p>HTML5/CSS3</p>
+                  <div class="thums_down">
+                  <form action="{% url 'dislike-post' object.pk %}" method="POST">
+                    {% csrf_token %}
+                    {% if user.is_authenticated %}
+                    {% if disliked %}
+                      <button type="submit", name="post_id", value="{{post.id}}", class="btn btn-danger btn-sm">
+                        <i class="fa-solid fa-thumbs-down"></i>  ({{ object.total_dislikes }})
+                      </button>
+                    {% else %}
+                      <button type="submit", name="post_id", value="{{post.id}}", class="btn btn-primary btn-sm">
+                        <i class="fa-solid fa-thumbs-down"></i>  ({{ object.total_dislikes }})
+                      </button>
+                    {% endif %}
+                    {% else %}
+                    <small><a href="{%url 'login' %}">Login to DisLike</a></small>
+                    {% endif %}
+                  </form>
+                  </div>
                   <p>CMS</p>
                   <p>Logo</p>
                 </div>
