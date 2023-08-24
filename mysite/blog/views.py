@@ -7,12 +7,6 @@ from django.utils import timezone
 from django.urls import reverse, reverse_lazy
 from django.http import HttpResponseRedirect,JsonResponse
 
-
-def about(request):
-    # posts=Post.objects.all()
-    # context = {'posts' : posts}
-    return render(request, 'blog/me_profile.html')
-
 def home(request):
     posts = Post.objects.all()
     context = {'posts': posts}

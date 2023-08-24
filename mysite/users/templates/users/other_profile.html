@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{%load crispy_forms_tags %}
+{% block content %}
+  {% if profile %}
+  <div class="container text-center">
+    <div class="row">
+      <div class="col-8">
+        <h1>{{ profile.user.username }}'s Profile</h1>
+      </div>
+      <div class="col-4">
+
+        <div class="card">
+        <h5 class="card-header">Follows</h5>
+        <div class="card-body">
+          <p class="card-text">
+            {% for following in profile.follows.all %}
+           <a href="{% url 'other-profile' following.user.id %}" class="btn btn-primary">@{{ following.user }}</a>
+            {% endfor%}<br/><br/>
+          </p>
+        </div>
+        </div>
+
+        <br/>
+
+        <div class="card">
+        <h5 class="card-header">Followed by</h5>
+        <div class="card-body">
+          <p class="card-text">
+            {% for following in profile.followed_by.all %}
+            <a href="{% url 'other-profile' following.user.id %}" class="btn btn-primary">@{{ following.user }}</a>
+            {% endfor%}<br/><br/>
+          </p>
+        </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+  {% endif %}
+{% endblock %}

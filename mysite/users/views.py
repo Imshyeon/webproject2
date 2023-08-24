@@ -1,4 +1,5 @@
 from django.shortcuts import render, redirect
+from .models import Profile
 from .forms import LoginForm, RegisterForm, ChangePW, ResetPW, ProfileImageForm
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
@@ -9,6 +10,21 @@ from django.core.files import File
 from io import BytesIO
 
 # Create your views here.
+def profile(request,pk):
+    if request.user.is_authenticated:
+        profile=Profile.objects.get(user_id=pk)
+        if request.method == 'POST':
+            current_user_profile = request.user.profile
+            action = request.POST['follow'] #팔로우/언팔로우 결정(name 값 가져옴 me_profile에서)
+            if action == 'unfollow':
+                current_user_profile.follows.remove(profile)
+            elif action == 'follow':
+                current_user_profile.follows.add(profile)
+            current_user_profile.save()
+        return render(request, 'users/me_profile.html',{'profile':profile})
+    else:
+        messages.success(request,'Please Logged In')
+        return redirect('home')
 
 def home(request):
     return render(request,'users/home.html')
@@ -91,7 +107,7 @@ def change_password(request):
 
 #========================== 프로필 =============================
 @login_required
-def Myprofile(request):
+def Myprofile(request,pk):
     user_profile=request.user.profile
     if request.method == 'GET':
         form = ProfileImageForm(instance=user_profile)
@@ -99,16 +115,23 @@ def Myprofile(request):
     elif request.method == 'POST':
         form = ProfileImageForm(request.POST, request.FILES, instance=user_profile)
         if form.is_valid():
-            image=form.cleaned_data['image']
-            img=Image.open(image)
-            img = img.resize((200,200),Image.LANCZOS)
+            image = form.cleaned_data['image']
+            img = Image.open(image)
+            img = img.resize((300, 300), Image.LANCZOS)
             image_io = BytesIO()
-            img.save(image_io,format='JPEG')
-            edited_img=File(image_io, name=image.name)
-            form.cleaned_data['image']=edited_img
-            form.save()
-            return redirect('posts')
+            img.save(image_io, format='JPEG')  # Save the resized image to the BytesIO object
+            edited_img = File(image_io, name=image.name)
+            form.cleaned_data['image'] = edited_img
+
+            # Save the form and the edited image
+            instance = form.save(commit=False)
+            instance.image = edited_img  # Assign the edited image to the model field
+            instance.save()
+
+            return redirect('posts',pk=pk)
     else:
         form = ProfileImageForm(instance=user_profile)
     return render(request,'users/profile.html',{'form':form})
+
+
 

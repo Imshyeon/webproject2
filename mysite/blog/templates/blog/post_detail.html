@@ -20,7 +20,7 @@
           <div class="col-md-6" data-aos="fade-up">
             <div class="blog-post">
             <h2 class="blog-post-title">{{ object.title }}</h2>
-            <p class="blog-post-meta">Published on {{ object.published_at }} by <a href="{% url 'posts' %}"> {{ object.author}}</a></p>
+            <p class="blog-post-meta">Published on {{ object.published_at }} by <a href="{% url 'posts' post.author.id %}"> {{ object.author}}</a></p>
               <p class="blog-post-meta"><strong>Category</strong> {{ object.category }}</p>
             <div>
             {% if request.user.is_authenticated and request.user == object.author %}

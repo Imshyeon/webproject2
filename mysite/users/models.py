@@ -8,10 +8,13 @@ class Profile(models.Model):
     image = models.ImageField(default='default.jpg',upload_to='profile_pics')   #>>> user.profile.image.url # '/media/profile_pics/django.png'
     nickname = models.CharField(max_length=60, default='default_nickname')
     self_introduce = models.TextField(default='Hello world!')
+    follows=models.ManyToManyField("self", related_name="followed_by",symmetrical=False, blank=True)  #symmetrical=False : 내가 팔로우해도 그 사람이 무조건 나를 팔로우 할 필요 없다.
+    date_modified = models.DateTimeField(User,auto_now=True)    #프로필 수정한 마지막 날짜
+
     #음악, 캘린더 api
 
     def __str__(self):
-        return f'{self.user.username} Profile'
+        return self.user.username
 
 @receiver(post_save,sender=User)
 def create_user_profile(sender,instance,created,**kwargs):

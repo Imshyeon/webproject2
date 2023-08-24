@@ -52,7 +52,8 @@
           <ul class="custom-menu">
             {% if request.user.is_authenticated %}
               <li><a href="{%url 'home' %}">포스트</a></li>
-              <li><a href="{% url 'posts' %}">프로필</a></li>
+              <li><a href="{% url 'posts' request.user.id %}">내 프로필</a></li>
+
               <li><a href="{% url 'post-create' %}">새 게시물</a></li>
               <li><a href="{%url 'logout' %}">Logout</a></li>
               <li><a href="{%url 'find_account' %}">New Password</a></li>
