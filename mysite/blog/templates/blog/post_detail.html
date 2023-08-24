@@ -95,43 +95,29 @@
                 <hr>
                 <h4 class="h4 mb-3 font-italic">About This Post..</h4>
                 <div class="list-unstyled list-line mb-5">
-                  <div class="thums_up">
+                  <!-- 좋아요 버튼 -->
                   <form action="{% url 'like-post' object.pk %}" method="POST">
                     {% csrf_token %}
                     {% if user.is_authenticated %}
-                    {% if liked %}
-                      <button type="submit", name="post_id", value="{{post.id}}", class="btn btn-danger btn-sm">
-                        <i class="fa-solid fa-thumbs-up"></i>  ({{ object.total_likes }})
+                      <button type="submit" name="post_id" value="{{ post.id }}" class="btn btn-primary btn-sm">
+                        <i class="fa-solid fa-thumbs-up"></i> Like ({{ object.total_likes }})
                       </button>
                     {% else %}
-                      <button type="submit", name="post_id", value="{{post.id}}", class="btn btn-primary btn-sm">
-                        <i class="fa-solid fa-thumbs-up"></i>  ({{ object.total_likes }})
-                      </button>
-                    {% endif %}
-                    {% else %}
-                    <small><a href="{%url 'login' %}">Login to Like</a></small>
+                      <small><a href="{% url 'login' %}">Login to Like</a></small>
                     {% endif %}
                   </form>
-                  </div>
-                  <div class="thums_down">
+                  <!-- 싫어요 버튼 -->
                   <form action="{% url 'dislike-post' object.pk %}" method="POST">
                     {% csrf_token %}
                     {% if user.is_authenticated %}
-                    {% if disliked %}
-                      <button type="submit", name="post_id", value="{{post.id}}", class="btn btn-danger btn-sm">
-                        <i class="fa-solid fa-thumbs-down"></i>  ({{ object.total_dislikes }})
+                      <button type="submit" name="post_id" value="{{ post.id }}" class="btn btn-danger btn-sm">
+                        <i class="fa-solid fa-thumbs-down"></i> Dislike ({{ object.total_dislikes }})
                       </button>
                     {% else %}
-                      <button type="submit", name="post_id", value="{{post.id}}", class="btn btn-primary btn-sm">
-                        <i class="fa-solid fa-thumbs-down"></i>  ({{ object.total_dislikes }})
-                      </button>
-                    {% endif %}
-                    {% else %}
-                    <small><a href="{%url 'login' %}">Login to DisLike</a></small>
+                      <small><a href="{% url 'login' %}">Login to Dislike</a></small>
                     {% endif %}
                   </form>
-                  </div>
-                  <p>CMS</p>
+
                   <p>Logo</p>
                 </div>
               </div>
