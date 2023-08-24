@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<form method="POST" novalidate>
+    {% csrf_token %}
+    <h2> Sign up </h2>
+    {% for field in form %}
+    <p>
+        {% if field.errors %}
+            {{field.errors}}
+        {% endif %}
+        {{field.label_tag}} {{field}}
+    </p>
+    {% endfor %}
+    <input type = "submit" value = "Register" />
+    <p> Already has an account? <a href = "{%url 'login'%}"> Login </a></p>
+</form>
+{% endblock content %}

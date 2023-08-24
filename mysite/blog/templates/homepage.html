@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+{% block contect %}
+<h1>My Post</h1>
+{% for post in posts %}
+<h2>{{post.title}}</h2>
+<small> Published on {{post.published_at}} by {{post.author}}</small>
+<p>{{post.content}}</p>
+
+{% endfor %}
+{% endblock content%}

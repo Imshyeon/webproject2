@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+
+  <!-- =======================================================
+  * Template Name: MyPortfolio
+  * Updated: Jul 27 2023 with Bootstrap v5.3.1
+  * Template URL: https://bootstrapmade.com/myportfolio-bootstrap-portfolio-website-template/
+  * Author: BootstrapMade.com
+  * License: https://bootstrapmade.com/license/
+  ======================================================== -->
+
+{% block content %}
+  <main id="main">
+
+    <section class="section pb-5">
+      <div class="container">
+        <div class="row mb-5 align-items-end">
+          <div class="col-md-6" data-aos="fade-up">
+
+            <h2>About Me</h2>
+            {% if request.user.is_authenticated %}
+              <p class="mb-0">Hello, {{request.user.username}}!</p>
+            {% else %}
+              <p> Hello, MiniHomepages</p>
+            {% endif %}
+          </div>
+        </div>
+
+          <div class="col-md-7 mb-5 mb-md-0" data-aos="fade-up">
+            <p><img src="{{ user.profile.image.url }}" alt="Image" class="img-fluid"></p>
+            <p>{{ request.user.username}}</p>
+              <hr>
+            <p>nickname : {{user.profile.nickname}}</p>
+            <p>email : {{user.email}}</p>
+            <p>자기소개 : {{user.profile.self_introduce}}</p>
+            <a href="{% url 'profile' %}">프로필 수정</a>
+          </div>
+      </div>
+    </section>
+  </main>
+
+
+{% endblock %}

@@ -1,0 +1,159 @@
+{% extends 'base.html' %}
+{% load static %}
+
+  <!-- =======================================================
+  * Template Name: MyPortfolio
+  * Updated: Jul 27 2023 with Bootstrap v5.3.1
+  * Template URL: https://bootstrapmade.com/myportfolio-bootstrap-portfolio-website-template/
+  * Author: BootstrapMade.com
+  * License: https://bootstrapmade.com/license/
+  ======================================================== -->
+
+{% block content %}
+<head>
+      <link href="{% static 'assets/css/blog.css' %}" rel="stylesheet">
+</head>
+
+    <section class="section">
+      <div class="container">
+        <div class="row mb-4 align-items-center">
+          <div class="col-md-6" data-aos="fade-up">
+            <div class="blog-post">
+            <h2 class="blog-post-title">{{ object.title }}</h2>
+            <p class="blog-post-meta">Published on {{ object.published_at }} by <a href="{% url 'posts' %}"> {{ object.author}}</a></p>
+              <p class="blog-post-meta"><strong>Category</strong> {{ object.category }}</p>
+            <div>
+            {% if request.user.is_authenticated and request.user == object.author %}
+            <p>
+              <a class="btn btn-circle btn-sm mt-1 mb-1" href="{% url 'post-edit' object.id %}"> <i class="fas fa-info-circle"></i></a>
+              <a class="btn btn-circle btn-sm mt-1 mb-1" href="{% url 'post-delete' object.id %}"> <i class="fas fa-trash"></i> </a>
+              <a href="{% url 'home' %}" class="btn btn-circle btn-sm mt-1 mb-1"><i class="fas fa-home"></i></a>
+            </p>
+            {% endif %}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="site-section pb-0">
+        <div class="container">
+          <div class="row align-items-stretch">
+            <div class="col-md-8" data-aos="fade-up">
+                <p>{{ object.content }}</p>
+            </div>
+
+            <div class="col-md-3 ml-auto" data-aos="fade-up" data-aos-delay="100">
+              <div class="sticky-content">
+              <h3 class="font-italic">Comments ({{ object.comments.all | length }})</h3>
+              <br>
+              {% if not object.comments.all %}
+                  <p>No Comments Yet..</p>
+              {% else %}
+                  {% for comment in object.comments.all %}
+                      <strong>{{ comment.name }} - {{ comment.created_at }}</strong>
+                      <br>
+                      {{ comment.content }}
+                      <a href="{% url 'add-reply' object.id comment.id %}">
+                          <i class="fa-solid fa-reply"></i> Reply
+                      </a>
+                      <br>
+                      {% for re_comment in comment.re_comments.all %}
+                          <small>ㄴ {{ re_comment.author }} - {{ re_comment.replied_created_at }}</small>
+                          <br>
+                          <small>{{ re_comment.body }}</small>
+                      {% endfor %}
+                      <br><br>
+                  {% endfor %}
+              {% endif %}
+              <a href="{% url 'add-comment' object.id %}" class="btn btn-primary">
+                  <i class="fa-solid fa-comment"></i> Add Comment
+              </a>
+              <hr>
+          </div>
+          </div>
+
+            <br>
+
+            <div class="col-md-3 ml-auto" data-aos="fade-up" data-aos-delay="100">
+              <div class="sticky-content">
+                <h3 class="font-italic">Archives</h3>
+                <ol class="list-unstyled mb-0">
+                  <li><a href="#">March 2014</a></li>
+                  <li><a href="#">February 2014</a></li>
+                  <li><a href="#">January 2014</a></li>
+                  <li><a href="#">December 2013</a></li>
+                  <li><a href="#">November 2013</a></li>
+                  <li><a href="#">October 2013</a></li>
+                  <li><a href="#">September 2013</a></li>
+                  <li><a href="#">August 2013</a></li>
+                  <li><a href="#">July 2013</a></li>
+                  <li><a href="#">June 2013</a></li>
+                  <li><a href="#">May 2013</a></li>
+                  <li><a href="#">April 2013</a></li>
+                </ol>
+                <br>
+                <hr>
+                <h4 class="h4 mb-3 font-italic">About This Post..</h4>
+                <div class="list-unstyled list-line mb-5">
+                  <div class="thums_up">
+                  <form action="{% url 'like-post' object.pk %}" method="POST">
+                    {% csrf_token %}
+                    <button type="submit", name="post_id", value="{{post.id}}", class="btn btn-primary btn-sm">
+                      <i class="fa-solid fa-thumbs-up"></i>
+                    </button>
+                  </form>
+                  </div>
+                  <p>HTML5/CSS3</p>
+                  <p>CMS</p>
+                  <p>Logo</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      </div>
+    </section>
+
+
+<!-- ======= Testimonials Section = 맞팔 친구 ======= -->
+    <section class="section pt-0">
+      <div class="container">
+
+        <div class="testimonials-slider swiper" data-aos="fade-up" data-aos-delay="100">
+          <div class="swiper-wrapper">
+
+            <div class="swiper-slide">
+              <div class="testimonial-wrap">
+                <div class="testimonial">
+                  <img src="{% static 'assets/img/person_1.jpg' %}" alt="Image" class="img-fluid">
+                  <blockquote>
+                    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam necessitatibus incidunt ut officiis
+                      explicabo inventore.</p>
+                  </blockquote>
+                  <p>&mdash; Jean Hicks</p>
+                </div>
+              </div>
+            </div><!-- End testimonial item -->
+
+            <div class="swiper-slide">
+              <div class="testimonial-wrap">
+                <div class="testimonial">
+                  <img src="{% static 'assets/img/person_2.jpg' %}" alt="Image" class="img-fluid">
+                  <blockquote>
+                    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam necessitatibus incidunt ut officiis
+                      explicabo inventore.</p>
+                  </blockquote>
+                  <p>&mdash; Chris Stanworth</p>
+                </div>
+              </div>
+            </div><!-- End testimonial item -->
+
+          </div>
+          <div class="swiper-pagination"></div>
+        </div>
+
+      </div>
+    </section><!-- End Testimonials Section -->
+
+{% endblock content%}
