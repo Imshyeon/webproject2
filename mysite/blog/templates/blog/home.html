@@ -37,7 +37,6 @@
                     {% for item in cat_menu %}
                     <a href="{% url 'get_filtered_posts' item %}" data-filter="{{item}}">{{item}}</a>
                     {%endfor%}
-
                 </div>
             </div>
         </div>
@@ -47,7 +46,7 @@
                     {% for post in posts %}
                     <div class="col-md-6 mb-4">
                         <div class="card box-shadow">
-                            <img class="card-img-top" data-src="holder.js/100px225?theme=thumb&bg=55595c&fg=eceeef&text=Thumbnail" alt="Card image cap">
+                            <img class="card-img-top" src="{{ post.post_image.url }}" alt="Card image cap" width="400" height="300">
                             <div class="card-body">
                                 <p class="card-text">{{post.title}} by {{ post.author}} </p>
                                 <div class="d-flex justify-content-between align-items-center">
@@ -80,32 +79,19 @@
         <div class="testimonials-slider swiper" data-aos="fade-up" data-aos-delay="100">
           <div class="swiper-wrapper">
 
+            {% for followings in user.profile.follows.all %}
             <div class="swiper-slide">
               <div class="testimonial-wrap">
                 <div class="testimonial">
-                  <img src="{% static 'assets/img/person_1.jpg' %}" alt="Image" class="img-fluid">
+                  <img src="{{ followings.image.url }}" alt="Image"  width="120" height="120">
                   <blockquote>
-                    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam necessitatibus incidunt ut officiis
-                      explicabo inventore.</p>
+                    <p>{{ followings.self_introduce }}</p>
                   </blockquote>
-                  <p>&mdash; Jean Hicks</p>
+                  <p>&mdash; {{ followings.user.username }}</p>
                 </div>
               </div>
-            </div><!-- End testimonial item -->
-
-            <div class="swiper-slide">
-              <div class="testimonial-wrap">
-                <div class="testimonial">
-                  <img src="{% static 'assets/img/person_2.jpg' %}" alt="Image" class="img-fluid">
-                  <blockquote>
-                    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam necessitatibus incidunt ut officiis
-                      explicabo inventore.</p>
-                  </blockquote>
-                  <p>&mdash; Chris Stanworth</p>
-                </div>
-              </div>
-            </div><!-- End testimonial item -->
-
+            </div><!-- 자신+친구들 -->
+            {% endfor %}
           </div>
           <div class="swiper-pagination"></div>
         </div>

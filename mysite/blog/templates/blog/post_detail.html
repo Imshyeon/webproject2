@@ -40,6 +40,9 @@
           <div class="row align-items-stretch">
             <div class="col-md-8" data-aos="fade-up">
                 <p>{{ object.content }}</p>
+                {% if post.post_image and post.post_image.url != '/media/default_post_image.jpg' %}
+                  <img src="{{ post.post_image.url }}" class="img-fluid">
+                {% endif %}
             </div>
 
             <div class="col-md-3 ml-auto" data-aos="fade-up" data-aos-delay="100">
@@ -73,7 +76,7 @@
           </div>
 
             <br>
-
+            <!-- 해당 유저가 쓴 다른 게시판 -->
             <div class="col-md-3 ml-auto" data-aos="fade-up" data-aos-delay="100">
               <div class="sticky-content">
                 <h3 class="font-italic">Archives</h3>
@@ -106,6 +109,7 @@
                       <small><a href="{% url 'login' %}">Login to Like</a></small>
                     {% endif %}
                   </form>
+                  <br/>
                   <!-- 싫어요 버튼 -->
                   <form action="{% url 'dislike-post' object.pk %}" method="POST">
                     {% csrf_token %}
@@ -117,8 +121,6 @@
                       <small><a href="{% url 'login' %}">Login to Dislike</a></small>
                     {% endif %}
                   </form>
-
-                  <p>Logo</p>
                 </div>
               </div>
             </div>
@@ -135,32 +137,19 @@
 
         <div class="testimonials-slider swiper" data-aos="fade-up" data-aos-delay="100">
           <div class="swiper-wrapper">
-
+            {% for followings in user.profile.follows.all %}
             <div class="swiper-slide">
               <div class="testimonial-wrap">
                 <div class="testimonial">
-                  <img src="{% static 'assets/img/person_1.jpg' %}" alt="Image" class="img-fluid">
+                  <img src="{{ followings.image.url }}" alt="Image"  width="120" height="120">
                   <blockquote>
-                    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam necessitatibus incidunt ut officiis
-                      explicabo inventore.</p>
+                    <p>{{ followings.self_introduce }}</p>
                   </blockquote>
-                  <p>&mdash; Jean Hicks</p>
+                  <p>&mdash; {{ followings.user.username }}</p>
                 </div>
               </div>
             </div><!-- End testimonial item -->
-
-            <div class="swiper-slide">
-              <div class="testimonial-wrap">
-                <div class="testimonial">
-                  <img src="{% static 'assets/img/person_2.jpg' %}" alt="Image" class="img-fluid">
-                  <blockquote>
-                    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam necessitatibus incidunt ut officiis
-                      explicabo inventore.</p>
-                  </blockquote>
-                  <p>&mdash; Chris Stanworth</p>
-                </div>
-              </div>
-            </div><!-- End testimonial item -->
+            {% endfor %}
 
           </div>
           <div class="swiper-pagination"></div>

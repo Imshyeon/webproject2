@@ -5,7 +5,7 @@ from .models import Post, Comment, ReComment
 from .forms import CommentForm, ReplyForm, PostForm
 from django.utils import timezone
 from django.urls import reverse, reverse_lazy
-from django.http import HttpResponseRedirect,JsonResponse
+from django.http import HttpResponseRedirect
 
 def home(request):
     posts = Post.objects.all()
@@ -59,8 +59,7 @@ class PostCreateView(LoginRequiredMixin, CreateView):
 
 class PostUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Post
-    fields = ['title','category','content']
-
+    fields = ['title','category','content','post_image']
 
     def form_valid(self, form):
         form.instance.author = self.request.user
@@ -82,8 +81,6 @@ class PostDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
         return False
 
 # ============ 댓글 ==============
-
-
 def add_comment(request,pk):
     post = get_object_or_404(Post, pk=pk)
     if request.method == 'POST':

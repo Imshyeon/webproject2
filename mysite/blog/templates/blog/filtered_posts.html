@@ -39,7 +39,7 @@
             {% for post in filtered_posts %}
             <div class="col-md-6 mb-4">
                 <div class="card box-shadow">
-                    <img class="card-img-top" src="holder.js/100px225?theme=thumb&bg=55595c&fg=eceeef&text=Thumbnail" alt="Card image cap">
+                    <img class="card-img-top" src="{{ post.post_image.url }}" alt="Card image cap" width="400" height="300">
                     <div class="card-body">
                         <p class="card-text">{{ post.title }} by {{ post.author }}</p>
                         <!-- 추가적인 포스트 카드 내용 -->

@@ -18,8 +18,9 @@ class Post(models.Model):
     published_at = models.DateTimeField(default=timezone.now)
     author=models.ForeignKey(User,on_delete=models.CASCADE)
     category = models.CharField(max_length=15, choices=CATEGORY_CHOICES, default='uncategorized')
-    likes=models.ManyToManyField(User, related_name="likes")
-    dislikes = models.ManyToManyField(User, related_name="dislikes")
+    likes=models.ManyToManyField(User, related_name="likes",blank=True)
+    dislikes = models.ManyToManyField(User, related_name="dislikes",blank=True)
+    post_image = models.ImageField(default='default_post_image.jpg',upload_to='post_pics/',null=True,blank=True)
 
     def __str__(self):
         return self.title
