@@ -17,7 +17,8 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from . import views
-from .views import (PostListView, PostDetailView, PostCreateView, PostUpdateView, PostDeleteView, LikeView, DisLikeView)
+from .views import PostListView, PostDetailView, PostCreateView, PostUpdateView, PostDeleteView, LikeView, DisLikeView, PostsAPI, CommentsAPI, ReCommentsAPI, PostAPI, CommentAPI, ReCommentAPI
+
 
 urlpatterns = [
     path('', PostListView.as_view(), name="home"),
@@ -31,4 +32,12 @@ urlpatterns = [
     path('like/<int:pk>', LikeView, name='like-post'),
     path('dislike/<int:pk>', DisLikeView, name='dislike-post'),
     path('category/<str:category>/', views.get_filtered_posts, name='get_filtered_posts'),
+
+    # API endpoints
+    path('api/posts/', PostsAPI.as_view(), name='api-posts'),
+    path('api/comments/', CommentsAPI.as_view(), name='api-comments'),
+    path('api/recomments/', ReCommentsAPI.as_view(), name='api-recomments'),
+    path('api/post/<str:title>/', PostAPI.as_view(), name='api-post'),
+    path('api/comment/<int:pk>/', CommentAPI.as_view(), name='api-comment'),
+    path('api/recomment/<int:pk>/', ReCommentAPI.as_view(), name='api-recomment'),
 ]

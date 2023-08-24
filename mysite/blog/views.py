@@ -6,7 +6,12 @@ from .forms import CommentForm, ReplyForm, PostForm
 from django.utils import timezone
 from django.urls import reverse, reverse_lazy
 from django.http import HttpResponseRedirect,JsonResponse
-
+from rest_framework import viewsets, permissions, generics, status
+from rest_framework.response import Response
+from rest_framework.views import APIView
+from rest_framework.decorators import api_view
+from rest_framework.generics import get_object_or_404
+from .serializers import PostSerializer, CommentSerializer, ReCommentSerializer
 
 def about(request):
     # posts=Post.objects.all()
@@ -141,3 +146,59 @@ def DisLikeView(request,pk):
         post.likes.add(request.user)
         disliked=True
     return HttpResponseRedirect(reverse('post-detail',args=[str(pk)]))
+
+class PostsAPI(APIView):
+    def get(self, request):
+        posts = Post.objects.all()
+        serializer = PostSerializer(posts, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    def post(selfself, request):
+        serializer = PostSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class PostAPI(APIView):
+    def get(self, request, title):
+        post = get_object_or_404(Post, title = title)
+        serializer = PostSerializer(post)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+class CommentsAPI(APIView):
+    def get(self, request):
+        comments = Comment.objects.all()
+        serializer = CommentSerializer(comments, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def post(self, request):
+        serializer = CommentSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class CommentAPI(APIView):
+    def get(self, request, pk):
+        comment = get_object_or_404(Comment, pk=pk)
+        serializer = CommentSerializer(comment)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+class ReCommentsAPI(APIView):
+    def get(self, request):
+        re_comments = ReComment.objects.all()
+        serializer = ReCommentSerializer(re_comments, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def post(self, request):
+        serializer = ReCommentSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class ReCommentAPI(APIView):
+    def get(self, request, pk):
+        re_comment = get_object_or_404(ReComment, pk=pk)
+        serializer = ReCommentSerializer(re_comment)
+        return Response(serializer.data, status=status.HTTP_200_OK)
