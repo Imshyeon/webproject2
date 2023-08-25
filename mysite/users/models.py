@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.db import models
 from django.contrib.auth.models import User
 from django.dispatch import receiver
@@ -17,3 +18,5 @@ class Profile(models.Model):
 def create_user_profile(sender,instance,created,**kwargs):
     if created:
         Profile.objects.create(user=instance)
+
+# admin_mode------------------------------------시작

@@ -14,15 +14,15 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
-from django.contrib import admin
+
 from django.urls import path
 from . import views
 from .views import PostListView, PostDetailView, PostCreateView, PostUpdateView, PostDeleteView, LikeView, DisLikeView, PostsAPI, CommentsAPI, ReCommentsAPI, PostAPI, CommentAPI, ReCommentAPI
 
 
 urlpatterns = [
-    path('', PostListView.as_view(), name="home"),
-    path('post/<int:pk>', PostDetailView.as_view(), name="post-detail"),
+    path('', views.PostListView.as_view(), name='home'),
+    path('post/<int:pk>/', views.PostDetailView.as_view(), name='post-detail'),
     path('my_posts',views.about, name="posts"),
     path('post/create',PostCreateView.as_view(), name='post-create'),
     path('post/<int:pk>/edit', PostUpdateView.as_view(), name="post-edit"),
@@ -37,7 +37,7 @@ urlpatterns = [
     path('api/posts/', PostsAPI.as_view(), name='api-posts'),
     path('api/comments/', CommentsAPI.as_view(), name='api-comments'),
     path('api/recomments/', ReCommentsAPI.as_view(), name='api-recomments'),
-    path('api/post/<str:title>/', PostAPI.as_view(), name='api-post'),
+    path('api/post/<int:pk>/', PostAPI.as_view(), name='api-post'),
     path('api/comment/<int:pk>/', CommentAPI.as_view(), name='api-comment'),
     path('api/recomment/<int:pk>/', ReCommentAPI.as_view(), name='api-recomment'),
 ]

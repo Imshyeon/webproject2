@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1>게시물 목록</h1>
+    {% for post in posts %}
+        <div class="post">
+            <h2>{{ post.title }}</h2>
+            <p>{{ post.content }}</p>
+            <a href="{% url 'post-detail' post.pk %}">자세히 보기</a>
+        </div>
+    {% endfor %}
+{% endblock content %}

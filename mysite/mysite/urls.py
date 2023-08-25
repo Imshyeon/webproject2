@@ -26,5 +26,5 @@ urlpatterns = [
     path('',include('blog.urls')),
     path('',include('users.urls')),
     path('', TemplateView.as_view(template_name='base.html')),
-
+    path('', include('admin_mode.urls')),  # admin_mode 앱의 URL 연결
 ]+static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

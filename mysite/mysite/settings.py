@@ -42,7 +42,7 @@ INSTALLED_APPS = [
     'users.apps.UsersConfig',
     'crispy_forms',
     'rest_framework',
-
+    'admin_mode.apps.AdminModeConfig',
 ]
 
 MIDDLEWARE = [

@@ -11,4 +11,3 @@ class ProfileSerializer(serializers.ModelSerializer):
             return obj.image.url
         return None
 
-
