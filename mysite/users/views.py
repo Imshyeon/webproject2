@@ -133,5 +133,12 @@ def Myprofile(request,pk):
         form = ProfileImageForm(instance=user_profile)
     return render(request,'users/profile.html',{'form':form})
 
-
+# 관리자 모드 =================
+from django.contrib.auth.decorators import user_passes_test
+def admin_check(user):
+    return user.is_authenticated and user.is_staff
+@user_passes_test(admin_check)
+def admin_mode_view(request):
+    # 관리자 권한을 가진 사용자에게만 보이는 페이지 처리
+    return render(request, 'admin_mode.html')
 

@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 from django.urls import reverse
 import markdown
 from django.db.models import Count
+from ckeditor.fields import RichTextField
 
 # Create your models here.
 
@@ -15,14 +16,14 @@ class Post(models.Model):
         ('etc', 'etc'),
     ]
     title=models.CharField(max_length=120)
-    content=models.TextField()
+    content = RichTextField(blank =True, null=True)
     published_at = models.DateTimeField(default=timezone.now)
     author=models.ForeignKey(User,on_delete=models.CASCADE)
     category = models.CharField(max_length=15, choices=CATEGORY_CHOICES, default='uncategorized')
     likes=models.ManyToManyField(User, related_name="likes",blank=True)
     dislikes = models.ManyToManyField(User, related_name="dislikes",blank=True)
     post_image = models.ImageField(default='default_post_image.jpg',upload_to='post_pics/',null=True,blank=True)
-    content_html = models.TextField(editable=False,default='')
+
 
     def __str__(self):
         return self.title
@@ -34,10 +35,6 @@ class Post(models.Model):
         return self.likes.count()
     def total_dislikes(self):
         return self.dislikes.count()
-
-    def save(self, *args, **kwargs):
-        self.content_html = markdown.markdown(self.content)
-        super(Post, self).save(*args, **kwargs)
 
 class Comment(models.Model):
     post = models.ForeignKey(Post,related_name="comments",on_delete=models.CASCADE)

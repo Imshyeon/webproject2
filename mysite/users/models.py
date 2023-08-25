@@ -20,3 +20,12 @@ class Profile(models.Model):
 def create_user_profile(sender,instance,created,**kwargs):
     if created:
         Profile.objects.create(user=instance)
+
+
+# admin
+class AdminModeData(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    data_field_1 = models.CharField(max_length=100)
+    data_field_2 = models.TextField()
+    def __str__(self):
+        return f"{self.user.username} - {self.data_field_1}"

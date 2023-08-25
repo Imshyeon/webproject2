@@ -6,19 +6,18 @@ from .forms import CommentForm, ReplyForm, PostForm
 from django.utils import timezone
 from django.urls import reverse, reverse_lazy
 from django.http import HttpResponseRedirect
-import markdown
+from django.core.paginator import Paginator
 
 def home(request):
     posts = Post.objects.all()
     context = {'posts': posts}
     return render(request, 'blog/home.html', context)
 
-def convert_newlines_to_br(text):
-    lines = text.split('\n')
-    html_lines = []
-    for line in lines:
-        html_lines.append(line + '<br>')
-    return ''.join(html_lines)
+def Paginate(request):
+    p = Paginator(Post.objects.all(), 5)
+    page = request.GET.get('page')
+    post_pages = p.get_page(page)
+    return render(request,'blog/home.html',{'post_pages':post_pages})
 
 #====================================
 class PostListView(ListView):
@@ -26,10 +25,10 @@ class PostListView(ListView):
     template_name = "blog/home.html"   # <app>/<model>_<viewtype>.html
     context_object_name = "posts"
     ordering = ['-published_at']
+
     def get_context_data(self, *args, **kwargs):
         cat_menu=Post.objects.values_list('category', flat=True).distinct()
         context=super(PostListView,self).get_context_data(*args, **kwargs)
-
         total_likes = Post.objects.values_list('likes', flat=True).distinct()
         liked=False
         if total_likes.filter(id=self.request.user.id).exists():
@@ -56,39 +55,22 @@ def get_filtered_posts(request, category):
 class PostDetailView(DetailView):
     model = Post
 
-    def get_context_data(self, **kwargs):
-        context=super().get_context_data(**kwargs)
-        content_html=markdown.markdown(self.object.content)
-        context['post'].content=content_html
-        return context
-
 class PostCreateView(LoginRequiredMixin, CreateView):
     model = Post
     form_class = PostForm  # 사용할 폼 지정
     template_name = 'blog/post_form.html'  # 폼을 렌더링할 템플릿 지정
 
     def form_valid(self, form):
-        form.instance.author=self.request.user
-        content = form.cleaned_data['content']
-        content_html=convert_newlines_to_br(markdown.markdown(content))
-        form.instance.content_html=content_html
+        form.instance.author = self.request.user
         return super().form_valid(form)
-
-    # def form_valid(self, form):
-    #     form.instance.author = self.request.user
-    #     return super().form_valid(form)
 
 class PostUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Post
     form_class = PostForm
 
     def form_valid(self, form):
-        form.instance.author=self.request.user
-        content=form.cleaned_data['content']
-        content_html=convert_newlines_to_br(markdown.markdown(content))
-        form.instance.content_html=content_html
+        form.instance.author = self.request.user
         return super().form_valid(form)
-
     def test_func(self):
         post=self.get_object()
         if self.request.user == post.author: # 현재 로그인한 유저가 포스팅 유저와 같다면..

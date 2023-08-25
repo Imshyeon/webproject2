@@ -40,7 +40,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'blog.apps.BlogConfig',
     'users.apps.UsersConfig',
-    'crispy_forms'
+    'crispy_forms',
+    'ckeditor'
 ]
 
 MIDDLEWARE = [
@@ -135,3 +136,12 @@ CRISPY_TEMPLATE_PACK = 'bootstrap4'  # 사용할 스타일 팩 선택
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.naver.com'
+EMAIL_PORT = '587'
+# EMAIL_USE_SSL = True
+EMAIL_USER_TLS = True
+EMAIL_HOST_USER = 'kzoen0040@naver.com'#os.environ.get('EMAIL_USER')
+EMAIL_HOST_PASSWORD ='^Kimjml5v2!' #os.environ.get('EMAIL_PASS'),
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER

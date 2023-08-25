@@ -35,25 +35,27 @@
                 </div>
             </div>
         </div>
-        <div class="row">
-            {% for post in filtered_posts %}
-            <div class="col-md-6 mb-4">
-                <div class="card box-shadow">
-                    <img class="card-img-top" src="{{ post.post_image.url }}" alt="Card image cap" width="400" height="300">
-                    <div class="card-body">
-                        <p class="card-text">{{ post.title }} by {{ post.author }}</p>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div class="btn-group">
-                                <a href="{% url 'post-detail' post.id %}" class="btn btn-sm btn-outline-secondary">View</a>
-                                <a href="{% url 'post-edit' post.id %}" class="btn btn-sm btn-outline-secondary">Edit</a>
-                            </div>
-                            <small class="text-muted"> {{post.category}} <br> {{post.published_at}}</small>
-                        </div>
-                    </div>
-                </div>
+
+              <div class="row">
+        {% for post in filtered_posts %}
+        <div class="col-sm-6">
+          <div class="card bg-light mb-3 card border-dark mb-3" >
+            <div class="card-header"> &bullet; {{ post.category }}</div>
+            <div class="card-body">
+              <h5 class="card-title"><strong>{{ post.title }}</strong></h5>
+              <p class="card-text text-black-50"><span class="date"> by {{ post.author }} at {{ post.published_at }} </span></p>
+              <div class="button-group">
+                <a href="{% url 'post-detail' post.id %}" class="btn btn-sm btn btn-outline-dark">Read More</a>
+                {% if request.user == post.author %}
+                    <a href="{% url 'post-edit' post.id %}" class="btn btn-sm btn btn-outline-dark">Edit</a>
+                {% endif %}
+              </div>
             </div>
-            {% endfor %}
+          </div> <br/>
         </div>
+        {% endfor %}
+      </div>
+
     </div>
 </div>
 {% endblock content %}
