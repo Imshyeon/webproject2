@@ -6,11 +6,19 @@ from .forms import CommentForm, ReplyForm, PostForm
 from django.utils import timezone
 from django.urls import reverse, reverse_lazy
 from django.http import HttpResponseRedirect
+import markdown
 
 def home(request):
     posts = Post.objects.all()
     context = {'posts': posts}
     return render(request, 'blog/home.html', context)
+
+def convert_newlines_to_br(text):
+    lines = text.split('\n')
+    html_lines = []
+    for line in lines:
+        html_lines.append(line + '<br>')
+    return ''.join(html_lines)
 
 #====================================
 class PostListView(ListView):
@@ -48,22 +56,39 @@ def get_filtered_posts(request, category):
 class PostDetailView(DetailView):
     model = Post
 
+    def get_context_data(self, **kwargs):
+        context=super().get_context_data(**kwargs)
+        content_html=markdown.markdown(self.object.content)
+        context['post'].content=content_html
+        return context
+
 class PostCreateView(LoginRequiredMixin, CreateView):
     model = Post
     form_class = PostForm  # 사용할 폼 지정
     template_name = 'blog/post_form.html'  # 폼을 렌더링할 템플릿 지정
 
     def form_valid(self, form):
-        form.instance.author = self.request.user
+        form.instance.author=self.request.user
+        content = form.cleaned_data['content']
+        content_html=convert_newlines_to_br(markdown.markdown(content))
+        form.instance.content_html=content_html
         return super().form_valid(form)
+
+    # def form_valid(self, form):
+    #     form.instance.author = self.request.user
+    #     return super().form_valid(form)
 
 class PostUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Post
-    fields = ['title','category','content','post_image']
+    form_class = PostForm
 
     def form_valid(self, form):
-        form.instance.author = self.request.user
+        form.instance.author=self.request.user
+        content=form.cleaned_data['content']
+        content_html=convert_newlines_to_br(markdown.markdown(content))
+        form.instance.content_html=content_html
         return super().form_valid(form)
+
     def test_func(self):
         post=self.get_object()
         if self.request.user == post.author: # 현재 로그인한 유저가 포스팅 유저와 같다면..
@@ -90,26 +115,30 @@ def add_comment(request,pk):
             content=form.cleaned_data['content']
             comment = Comment(post=post, name=name,content=content,created_at=timezone.now)
             comment.save()
+            print(comment.name)
             return redirect('post-detail',pk=pk)
     else :
-        form=CommentForm()
+        form=CommentForm(initial={'name': request.user})
     return render(request,'blog/add_comment.html',{'form':form})
 
 def add_reply(request, pk, comment_id):
-    print("add_reply view called with pk:", pk, "and comment_id:", comment_id)
     parent_comment = get_object_or_404(Comment, pk=comment_id)
     if request.method == 'POST':
         form = ReplyForm(request.POST, instance=parent_comment)
+        print('is_valid 이전')
         if form.is_valid():
-            re_comment = form.save(commit=False)
-            re_comment.replied_to = parent_comment
-            re_comment.replied_created_at = timezone.now()
+            print('valid')
+            author = form.cleaned_data['author']
+            body = form.cleaned_data['body']
+            re_comment = ReComment(replied_to=parent_comment, author=author, body=body, replied_created_at=timezone.now)
             re_comment.save()
-            print(form)
+            print(author,'=====',body)
             return redirect('post-detail', pk=parent_comment.post.pk)
     else:
-        form = ReplyForm()  # 유효하지 않은 폼의 경우 폼 객체를 다시 생성해야 함
+        print('else')
+        form = ReplyForm(initial={'author': request.user, 'replied_to': parent_comment})
     return render(request, 'blog/add_reply.html', {'form': form})
+
 
 #=============================================
 def LikeView(request,pk):
