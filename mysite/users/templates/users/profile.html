@@ -1,9 +1,33 @@
 {% extends 'base.html' %}
-{%load crispy_forms_tags %}
+{% load crispy_forms_tags %}
+
 {% block content %}
-<form method="post" enctype="multipart/form-data">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit"> 프로필 저장 </button>
-</form>
-{% endblock content %}
+{% if user.is_authenticated %}
+<section class="section">
+    <div class="container">
+        <div class="row  align-items-center">
+            <div class="col" data-aos="fade-up">
+                <div class="content-section">
+                    <form method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <fieldset class="form-group">
+                            <div class="row">
+                                <div class="col">
+                                    <legend class="border-bottom mb-4">Profile</legend>
+                                    <div style="width: 100%; max-width: 800px;">
+                                         {{ form|crispy }}
+                                    </div>
+                                </div>
+                            </div>
+                        </fieldset>
+                        <div class="form-group">
+                            <button class="btn btn-outline-dark" type="submit">프로필 저장</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endif %}
+{% endblock %}

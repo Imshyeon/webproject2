@@ -87,24 +87,6 @@ def change_password(request):
         form=ChangePW(request.user)
     return render(request,'users/changePW.html',{'form':form})
 
-
-# def pw_reset(request):
-#     if request.method=='POST':
-#         form = PasswordResetForm(request.POST or None)
-#         if form.is_valid():
-#             form.save(
-#                 template_name='users/password_reset_form.html',
-#                 subject_template_name='users/password_reset_subject.txt',
-#                 email_template_name='users/password_reset_email.html',
-#                 request=request,
-#                 use_https=request.is_secure(),
-#             )
-#             messages.success(request,'이메일에 링크를 성공적으로 보냈습니다.')
-#             return redirect('login')
-#     else:
-#         form = PasswordResetForm(request)
-#     return render(request,'users/password_reset_form.html',{'form':form})
-
 #========================== 프로필 =============================
 @login_required
 def Myprofile(request,pk):
@@ -140,5 +122,5 @@ def admin_check(user):
 @user_passes_test(admin_check)
 def admin_mode_view(request):
     # 관리자 권한을 가진 사용자에게만 보이는 페이지 처리
-    return render(request, 'admin_mode.html')
+    return redirect('admin_mode')
 

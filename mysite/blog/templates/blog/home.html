@@ -82,7 +82,7 @@
                   <blockquote>
                     <p>{{ followings.self_introduce }}</p>
                   </blockquote>
-                  <p>&mdash; {{ followings.user.username }}</p>
+                  <p>&mdash; <a href="{% url 'posts' followings.user.id %}">{{ followings.user.username }}</p>
                 </div>
               </div>
             </div><!-- 자신+친구들 -->
