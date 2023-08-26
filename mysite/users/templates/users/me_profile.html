@@ -20,8 +20,11 @@
           <p><img src="{{ profile.image.url }}" alt="Image" class="img-fluid" width="300" height="200"></p>
           <div class="row">
               <!-- 프로필 수정 시, 이름 클릭 -->
+            {% if request.user.username == profile.user.username %}
               <a class="col-8" style="font-size: 40px" href="{% url 'profile' request.user.id %}"><strong>{{ profile.user.username }}</strong></a>
-
+            {% else %}
+              <a class="col-8" style="font-size: 40px" href="{% url 'posts' profile.user.id %}"><strong>{{ profile.user.username }}</strong></a>
+            {% endif %}
               {% if request.user.username == profile.user.username%}
 
               {% else %}
